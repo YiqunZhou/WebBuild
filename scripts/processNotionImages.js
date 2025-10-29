@@ -166,13 +166,7 @@ async function run() {
     console.log('🚀 Starting Notion image processing...');
 
     const response = await notion.databases.query({
-      database_id: NOTION_DB,
-      filter: {
-        property: "Status",
-        status: {
-          equals: "done"
-        }
-      }
+      database_id: NOTION_DB
     });
 
     const pages = response.results.map((page) => ({
