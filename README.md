@@ -33,15 +33,15 @@ A modern, accessible portfolio website template powered by Notion as a CMS. Buil
 
 ## 📋 Table of Contents
 
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [Project Structure](#project-structure)
-- [Notion Database Setup](#notion-database-setup)
-- [Environment Variables](#environment-variables)
-- [Development](#development)
-- [Deployment](#deployment)
-- [Customization](#customization)
-- [Credits](#credits)
+- [Quick Start](#-quick-start)
+- [Documentation](#-documentation)
+- [Project Structure](#-project-structure)
+- [Notion Database Setup](#-notion-database-setup)
+- [Environment Variables](#-environment-variables)
+- [Development](#-development)
+- [Deployment](#-deployment)
+- [Customization](#-customization)
+- [Credits](#-credits)
 
 ## 🚀 Quick Start
 

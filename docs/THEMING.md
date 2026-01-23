@@ -4,16 +4,16 @@ Complete guide to customizing the visual design of your Notion CMS template.
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
-- [CSS Architecture](#css-architecture)
-- [CSS Custom Properties](#css-custom-properties)
-- [Component Styling](#component-styling)
-- [Class Naming Conventions](#class-naming-conventions)
-- [Creating a Custom Theme](#creating-a-custom-theme)
-- [Dark Mode](#dark-mode)
-- [Typography](#typography)
-- [Colors & Gradients](#colors--gradients)
-- [Responsive Design](#responsive-design)
+- [Quick Start](#-quick-start)
+- [CSS Architecture](#-css-architecture)
+- [CSS Custom Properties](#-css-custom-properties)
+- [Component Styling](#-component-styling)
+- [Class Naming Conventions](#-class-naming-conventions)
+- [Creating a Custom Theme](#-creating-a-custom-theme)
+- [Dark Mode](#-dark-mode)
+- [Typography](#-typography)
+- [Colors & Gradients](#c-olors--gradients)
+- [Responsive Design](#-responsive-design)
 
 ## Quick Start
 
