@@ -11,7 +11,8 @@
       "Bash(npm --version:*)",
       "Bash(npm run test:properties:*)",
       "Bash(echo:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(/usr/local/bin/npm run generate:pages)"
     ]
   }
 }
