@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Admin Login - Leilei Xia Portfolio</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="https://unpkg.com/open-props"/>
+    <link rel="stylesheet" href="https://unpkg.com/open-props/normalize.min.css"/>
+
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--gray-1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 1rem;
+      }
+
+      .login-container {
+        max-width: 400px;
+        width: 100%;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: 1.75rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      input[type="password"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--gray-4);
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--blue-7);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      button {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--blue-7);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover,
+      button:focus {
+        background: var(--blue-8);
+        outline: 2px solid var(--blue-9);
+        outline-offset: 2px;
+      }
+
+      button:disabled {
+        background: var(--gray-5);
+        cursor: not-allowed;
+      }
+
+      .alert {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border-radius: 4px;
+        border-left: 4px solid var(--red-7);
+        background: var(--red-1);
+        color: var(--red-9);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h1>Admin Login</h1>
+      <p>Please enter your password to access the admin panel.</p>
+
+      <div id="error-message" role="alert" aria-live="polite"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            autocomplete="current-password"
+            aria-describedby="password-help"
+          />
+          <span id="password-help" style="font-size: 0.875rem; color: var(--gray-6);">
+            Enter the admin password
+          </span>
+        </div>
+
+        <button type="submit" id="login-button">Login</button>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById('login-form');
+      const button = document.getElementById('login-button');
+      const errorDiv = document.getElementById('error-message');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const password = document.getElementById('password').value;
+
+        button.disabled = true;
+        button.textContent = 'Logging in...';
+        errorDiv.innerHTML = '';
+
+        try {
+          const response = await fetch('/api/authenticate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ password })
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            // Store auth in session
+            sessionStorage.setItem('admin_auth', 'true');
+            // Redirect to admin panel
+            window.location.href = '/admin.html';
+          } else {
+            throw new Error(result.error || 'Invalid password');
+          }
+        } catch (error) {
+          errorDiv.innerHTML = `<div class="alert">${error.message}</div>`;
+          button.disabled = false;
+          button.textContent = 'Login';
+        }
+      });
+    </script>
+  </body>
+</html>

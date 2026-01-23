@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(export PATH=\"/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:$PATH\")",
+      "Bash(/usr/local/bin/node:*)",
+      "Bash(/usr/local/bin/npm install)",
+      "Bash(export PATH=\"/usr/local/bin:$PATH\")",
+      "Bash(npm install)",
+      "Bash(node test-properties.js:*)",
+      "Bash(npm --version:*)",
+      "Bash(npm run test:properties:*)",
+      "Bash(echo:*)",
+      "Bash(pkill:*)"
+    ]
+  }
+}

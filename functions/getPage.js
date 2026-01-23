@@ -1,38 +1,45 @@
 import { Client } from "@notionhq/client";
 
-const{NOTION_KEY,NOTION_DB} = process.env;
+export const handler = async (event, context) => {
+  try {
+    const { NOTION_KEY, NOTION_DB } = process.env;
 
-// Initializing a client
-const notion = new Client({
-  auth: NOTION_KEY,
-})
-
-export default async (req, context) => {
-  try{const response = await notion.databases.query({
-    database_id: NOTION_DB,
-    filter:{
-      "or": [
-        {
-          "property":"Status",
-          "status":{
-            "equals":"done"
-          }
-        },
-        {
-          "property":"Status",
-          "status":{
-            "equals":"private"
-          }
-        }
-      ]
+    if (!NOTION_KEY || !NOTION_DB) {
+      throw new Error("Missing NOTION_KEY or NOTION_DB environment variable");
     }
-  });
+
+    // Initialize Notion client
+    const notion = new Client({
+      auth: NOTION_KEY,
+    });
+
+    const response = await notion.databases.query({
+      database_id: NOTION_DB,
+      filter: {
+        "or": [
+          {
+            "property": "Status",
+            "status": {
+              "equals": "done"
+            }
+          },
+          {
+            "property": "Status",
+            "status": {
+              "equals": "private"
+            }
+          }
+        ]
+      }
+    });
+
     const pages = response.results.map((page) => ({
       Name: page.properties.Name.title[0]?.plain_text || 'Untitled',
       id: page.id,
       slug: page.properties.slug?.rich_text?.[0]?.plain_text || page.id,
       description: page.properties.description?.rich_text?.[0]?.plain_text || '',
-      titleImage: page.properties.titleImage?.files?.[0]?.external?.url || '',
+      titleImage: page.properties.titleImage?.files?.[0]?.external?.url ||
+                  page.properties.titleImage?.files?.[0]?.file?.url || '',
     }));
 
     // Recursive function to fetch block children
@@ -41,7 +48,7 @@ export default async (req, context) => {
         block_id: blockId,
         page_size: 100,
       });
-      
+
       // For each block, if it has children, fetch them recursively
       const blocksWithChildren = await Promise.all(
         blocks.results.map(async (block) => {
@@ -55,7 +62,7 @@ export default async (req, context) => {
           return block;
         })
       );
-      
+
       return blocksWithChildren;
     }
 
@@ -69,19 +76,32 @@ export default async (req, context) => {
           slug: page.slug,
           description: page.description,
           titleImage: page.titleImage,
-          tag:page.tag,
-          type:page.type,
           content: content,
         };
       })
     );
 
-    return new Response(JSON.stringify(pagesWithContent), {
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch(e){
-    console.error(e);
-    return new Response(JSON.stringify({statusCode:500,body:e.toString()}))
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify(pagesWithContent)
+    };
+
+  } catch (error) {
+    console.error("❌ Error fetching pages:", error);
+    return {
+      statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({
+        error: error.message || "Unknown error",
+        details: error.toString()
+      })
+    };
   }
-  
 };

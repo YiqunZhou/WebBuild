@@ -1,11 +1,13 @@
 import { Client } from "@notionhq/client";
 
-
-export default async (req) => {
+export const handler = async (event, context) => {
   try {
     const { NOTION_KEY, NOTION_DB } = process.env;
 
     if (!NOTION_KEY || !NOTION_DB) {
+      console.error("Missing environment variables");
+      console.error("NOTION_KEY:", NOTION_KEY ? "SET" : "NOT SET");
+      console.error("NOTION_DB:", NOTION_DB ? "SET" : "NOT SET");
       throw new Error("Missing NOTION_KEY or NOTION_DB environment variable");
     }
 
@@ -29,16 +31,25 @@ export default async (req) => {
 
     console.log("✅ Fetched data from Notion");
 
-    return new Response(JSON.stringify(response), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify(response)
+    };
   } catch (error) {
     console.error("❌ Notion fetch error:", error);
+    console.error("Error details:", error.message);
 
-    return new Response(JSON.stringify({ error: error.message || "Unknown error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    return {
+      statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({ error: error.message || "Unknown error" })
+    };
   }
 };
