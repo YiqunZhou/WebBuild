@@ -219,7 +219,7 @@ async function run() {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
     } catch (localError) {
       console.log('Local server not available, trying deployed URL...');
-      apiUrl = 'https://leileinotioncms.netlify.app/api/getPage';
+      apiUrl = 'https://tactileye.netlify.app/api/getPage';
       console.log(`Fetching pages from: ${apiUrl}`);
       response = await fetch(apiUrl);
       if (!response.ok) {

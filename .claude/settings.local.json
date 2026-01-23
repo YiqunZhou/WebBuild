@@ -12,7 +12,12 @@
       "Bash(npm run test:properties:*)",
       "Bash(echo:*)",
       "Bash(pkill:*)",
-      "Bash(/usr/local/bin/npm run generate:pages)"
+      "Bash(/usr/local/bin/npm run generate:pages)",
+      "Bash(netlify env:list:*)",
+      "Bash(netlify link:*)",
+      "Bash(netlify status:*)",
+      "Bash(netlify build:*)",
+      "Bash(netlify deploy:*)"
     ]
   }
 }

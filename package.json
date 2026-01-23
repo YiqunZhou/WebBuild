@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run generate:pages && netlify dev",
+    "dev": "netlify dev",
+    "dev:with-gen": "netlify deploy --build --prod && netlify dev",
     "dev:vite": "vite",
     "build": "vite build && npm run generate:pages && npm run copy:generated",
     "build:with-images": "vite build && npm run process:images && npm run generate:pages && npm run copy:generated && npm run descriptions",
