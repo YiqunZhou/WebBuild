@@ -366,7 +366,7 @@ MIT License - feel free to use this template for your own projects!
 
 - **Original Tutorial**: [Coding in Public](https://www.youtube.com/@CodinginPublic) - [Watch the series](https://www.youtube.com/watch?v=mukkm6o6Pjw&list=PLoqZcxvpWzzdJiW95Y7nDqY8XsiKTgo17&index=1)
 - **Built by**: [Leilei Xia](https://leileixia.com)
-- **Tools**: Vite, Notion API, Netlify, Supabase, Claude Code
+- **Tools**: Vite, Notion API, Netlify, Supabase, Aider, Claude Code
 
 ## 🐛 Troubleshooting
 
