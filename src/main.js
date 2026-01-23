@@ -3,6 +3,112 @@ import './style.css'
 let allCards = []; // Store all cards for filtering
 let activeFilters = new Set(); // Store active filter tags
 
+// Fetch and populate Index page content
+async function fetchIndexPageContent() {
+  try {
+    const response = await fetch('/api/getIndexPage');
+    const data = await response.json();
+
+    if (response.ok) {
+      // Update index_title with Name field (can contain HTML like <img> tags)
+      const indexTitle = document.querySelector('.index_title');
+      if (indexTitle && data.name) {
+        indexTitle.innerHTML = data.name;
+      }
+
+      // Update title image if provided separately
+      if (data.titleImage) {
+        const existingImage = document.querySelector('.nameLogo');
+        if (existingImage) {
+          existingImage.src = data.titleImage;
+          existingImage.alt = data.name || 'Leilei Xia';
+        }
+      }
+
+      // Update website title in nav (extract text only, no HTML)
+      const navLogo = document.querySelector('.nav__logo');
+      if (navLogo && data.name) {
+        // Create a temporary div to strip HTML tags for nav title
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = data.name;
+        navLogo.textContent = tempDiv.textContent || tempDiv.innerText || data.name;
+      }
+
+      // Update page title (extract text only, no HTML)
+      if (data.name) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = data.name;
+        const plainText = tempDiv.textContent || tempDiv.innerText || data.name;
+        document.title = `${plainText} - Artist`;
+      }
+
+      // Update hero title accent (from slug)
+      const heroTitleAccent = document.querySelector('.hero__title--accent');
+      if (heroTitleAccent && data.slug) {
+        heroTitleAccent.innerHTML = data.slug.replace(/\n/g, '<br>');
+      }
+
+      // Update hero subtitle (from description)
+      const heroSubtitle = document.querySelector('.hero__subtitle');
+      if (heroSubtitle && data.description) {
+        heroSubtitle.innerHTML = data.description.replace(/\n/g, '<br>');
+      }
+
+      // Update About section with page content
+      if (data.content && data.content.length > 0) {
+        const aboutText = document.querySelector('.about__text .about__intro');
+        if (aboutText) {
+          aboutText.innerHTML = renderNotionBlocks(data.content);
+        }
+      }
+
+      console.log('Index page content loaded successfully');
+    } else {
+      console.warn('Index page not found in database. Using default content.');
+    }
+  } catch (error) {
+    console.error('Error fetching Index page:', error);
+    // Silently fail and use existing HTML content
+  }
+}
+
+// Render Notion blocks to HTML
+function renderNotionBlocks(blocks) {
+  return blocks.map(block => {
+    switch (block.type) {
+      case 'paragraph':
+        const text = block.paragraph?.rich_text?.map(rt => {
+          let html = rt.plain_text || '';
+          if (rt.annotations?.bold) html = `<strong>${html}</strong>`;
+          if (rt.annotations?.italic) html = `<em>${html}</em>`;
+          if (rt.annotations?.code) html = `<code>${html}</code>`;
+          if (rt.href) html = `<a href="${rt.href}" target="_blank" rel="noopener noreferrer">${html}</a>`;
+          return html;
+        }).join('') || '';
+        return `<p>${text}</p>`;
+
+      case 'heading_1':
+        const h1Text = block.heading_1?.rich_text?.map(rt => rt.plain_text).join('') || '';
+        return `<h1>${h1Text}</h1>`;
+
+      case 'heading_2':
+        const h2Text = block.heading_2?.rich_text?.map(rt => rt.plain_text).join('') || '';
+        return `<h2>${h2Text}</h2>`;
+
+      case 'heading_3':
+        const h3Text = block.heading_3?.rich_text?.map(rt => rt.plain_text).join('') || '';
+        return `<h3>${h3Text}</h3>`;
+
+      case 'bulleted_list_item':
+        const liText = block.bulleted_list_item?.rich_text?.map(rt => rt.plain_text).join('') || '';
+        return `<li>${liText}</li>`;
+
+      default:
+        return '';
+    }
+  }).join('');
+}
+
 async function fetchTagOptions() {
   try {
     const response = await fetch('/api/getTagOptions');
@@ -189,7 +295,10 @@ function toggleTheme() {
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize theme
   initTheme();
-  
+
+  // Fetch Index page content
+  await fetchIndexPageContent();
+
   // Fetch data
   await fetchDataFromAPIEndPoint();
   
